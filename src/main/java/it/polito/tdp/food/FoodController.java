@@ -5,7 +5,9 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +42,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -48,20 +50,61 @@ public class FoodController {
     @FXML
     void doCammino(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco cammino peso massimo...");
+    	
+    	int lunghezza;  
+    	try {
+    		lunghezza = Integer.parseInt(txtPassi.getText());
+    	} catch (Throwable t) {
+    		txtResult.appendText("Inserire un input valido");
+    		return;
+    	}
+    	
+    	List <String> res = this.model.trovaPercorso(lunghezza, boxPorzioni.getValue());
+    	
+    	for (String s : res) {
+    		txtResult.appendText(s+"\n");
+    	}
+    	
+    	txtResult.appendText("\nPeso del cammino " + this.model.getPesoMassimo());
+    	
+    	
     }
 
     @FXML
     void doCorrelate(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco porzioni correlate...");
+    	
+    	String vertice = boxPorzioni.getValue();
+    	txtResult.appendText(this.model.direttamenteConnessi(vertice));
     	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
+    	
+    	int calorie;  
+    	try {
+    		calorie = Integer.parseInt(txtCalorie.getText());
+    	} catch (Throwable t) {
+    		txtResult.appendText("Inserire un input valido");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(calorie);
+    	for (String s: this.model.getPorzioni()) {
+    		if (boxPorzioni == null) {
+    			boxPorzioni.getItems().addAll(this.model.getPorzioni());
+    			return;
+    		} else {
+    			if (boxPorzioni.getItems().contains(s)) {
+    				boxPorzioni.getItems().remove(s);
+    			}
+    			boxPorzioni.getItems().add(s);
+    		}
+    	}
+    	
+    	txtResult.appendText("Grafo creato. #VERTCIC: "+this.model.vertexNumber()+" #ARCHI: "+this.model.edgeNumber());
     	
     }
 
