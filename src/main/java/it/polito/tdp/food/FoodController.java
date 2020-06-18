@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.food.model.Model;
+import it.polito.tdp.food.model.PorzioneAdiacente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -75,7 +76,11 @@ public class FoodController {
     	txtResult.clear();
     	
     	String vertice = boxPorzioni.getValue();
-    	txtResult.appendText(this.model.direttamenteConnessi(vertice));
+    	txtResult.appendText("Porzioni adiacenti a: "+vertice+"\n");
+    	for (PorzioneAdiacente p: this.model.direttamenteConnessi(vertice)) {
+    		txtResult.appendText(p.toString()+"\n");
+    	}
+    	
     	
     }
 
@@ -92,17 +97,9 @@ public class FoodController {
     	}
     	
     	this.model.creaGrafo(calorie);
-    	for (String s: this.model.getPorzioni()) {
-    		if (boxPorzioni == null) {
-    			boxPorzioni.getItems().addAll(this.model.getPorzioni());
-    			return;
-    		} else {
-    			if (boxPorzioni.getItems().contains(s)) {
-    				boxPorzioni.getItems().remove(s);
-    			}
-    			boxPorzioni.getItems().add(s);
-    		}
-    	}
+    	
+    	boxPorzioni.getItems().clear();
+    	boxPorzioni.getItems().addAll((model.getVrticiGrafo()));
     	
     	txtResult.appendText("Grafo creato. #VERTCIC: "+this.model.vertexNumber()+" #ARCHI: "+this.model.edgeNumber());
     	

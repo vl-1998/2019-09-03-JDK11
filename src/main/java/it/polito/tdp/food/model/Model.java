@@ -11,6 +11,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import it.polito.tdp.food.db.FoodDao;
 
@@ -58,7 +59,8 @@ public class Model {
 		return res;
 	}
 	
-	public String direttamenteConnessi(String scelta) {
+	//QUESTO NON FUNZIONA
+	/*public String direttamenteConnessi(String scelta) {
 		String res="";
 		for (DefaultWeightedEdge e : grafo.edgeSet()) {
 			for (String s: this.grafo.vertexSet()) {
@@ -74,6 +76,18 @@ public class Model {
 			}
 		}
 		return res;
+	}*/
+	
+	public List<PorzioneAdiacente> direttamenteConnessi(String scelta){
+		List<String> vicini = Graphs.neighborListOf(this.grafo, scelta);
+		List<PorzioneAdiacente> result = new ArrayList <>();
+		for (String s: vicini) {
+			PorzioneAdiacente pTemp = new PorzioneAdiacente(s, this.grafo.getEdgeWeight(this.grafo.getEdge(scelta, s)));
+			result.add(pTemp);
+		}
+		
+		Collections.sort(result);
+		return result;
 	}
 	
 	public List <String> trovaPercorso(int lunghezza, String verticeIniziale){
@@ -87,7 +101,7 @@ public class Model {
 	}
 	private void trovaRicorsivo(int lunghezza, List<String> parziale, String verticePrecedente) {	
 		//caso terminale, ho raggiunto il numero di iterazioni
-		if (parziale.size()==lunghezza) {
+		if (parziale.size()==lunghezza+1) {//se voglio avere N archi, avrò N+1 vertici
 			if (pesoTemp>pesoMassimo) {//se il peso 
 				this.best= new ArrayList<>(parziale);
 				this.pesoMassimo=pesoTemp;
@@ -108,6 +122,15 @@ public class Model {
 			}
 		}
 		
+	}
+
+	public List<String> getVrticiGrafo() {
+		List<String> result = new ArrayList<>();
+		for (String s: this.grafo.vertexSet()) {
+			result.add(s);
+		}
+		Collections.sort(result);
+		return result;
 	}
 	
 }
