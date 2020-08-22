@@ -83,8 +83,8 @@ public class Portion {
 
 	@Override
 	public String toString() {
-		return "{portion_id=" + portion_id + ", portion_amount=" + portion_amount + ", portion_display_name="
-				+ portion_display_name + ", food_code=" + food_code + "}";
+		return "id=" + portion_id + ", portion_display_name:"
+				+ portion_display_name + ", food_code=" + food_code;
 	}
 
 	
